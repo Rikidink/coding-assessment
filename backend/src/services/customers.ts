@@ -2,6 +2,11 @@ import { eq } from "drizzle-orm";
 import { db } from "../db/index.js";
 import { customersTable } from "../db/schemas/customers.js";
 
+/**
+ * Get a customer by ID
+ * @param custId ID of customer
+ * @returns the customer is found, else null
+ */
 export const getCustomer = async (custId: string) => {
   const cust = await db
     .select()
@@ -13,6 +18,11 @@ export const getCustomer = async (custId: string) => {
   return cust[0]
 };
 
+/**
+ * Create a customer
+ * @param obj contains customerId, firstName, and lastName
+ * @returns newly created customer
+ */
 export const createCustomer = async ({
   customerId,
   firstName,

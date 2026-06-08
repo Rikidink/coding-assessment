@@ -1,14 +1,22 @@
-import { useQuery } from "@tanstack/react-query"
+import { useState } from "react"
+import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { fetchOrders } from "./api/orders"
 
+const PAGE_SIZE = 5
+
 function App() {
-  const { data, isPending, isError, error} = useQuery({
-    queryKey: ['orders'],
-    queryFn: fetchOrders
+  const [page, setPage] = useState(1)
+
+  const { data, isPending, isError, error, isPlaceholderData } = useQuery({
+    queryKey: ['orders', page],
+    queryFn: () => fetchOrders({ page, pageSize: PAGE_SIZE }),
+    placeholderData: keepPreviousData,
   });
 
   if (isPending) return <p className="p-6 text-gray-500">Loading orders...</p>;
   if (isError) return <p className="p-6 text-red-600">Error: {error.message}</p>;
+
+  const totalPages = Math.max(1, Math.ceil(data.total / PAGE_SIZE));
 
   return (
     <div className="mx-auto max-w-3xl p-6">
@@ -43,6 +51,30 @@ function App() {
             )}
           </tbody>
         </table>
+      </div>
+
+      <div className="mt-4 flex items-center justify-between">
+        <button
+          type="button"
+          onClick={() => setPage((p) => Math.max(1, p - 1))}
+          disabled={page === 1}
+          className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          Previous
+        </button>
+
+        <span className="text-sm text-gray-600">
+          Page {page} of {totalPages}
+        </span>
+
+        <button
+          type="button"
+          onClick={() => setPage((p) => p + 1)}
+          disabled={isPlaceholderData || page >= totalPages}
+          className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          Next
+        </button>
       </div>
     </div>
   )

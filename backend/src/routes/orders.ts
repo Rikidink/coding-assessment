@@ -1,43 +1,45 @@
 import { Router } from "express";
-import { z } from "zod";
 import { getCustomer } from "../services/customers.js";
 import { createOrder, getOrders } from "../services/orders.js";
+import { getOrdersQuerySchema, createOrderSchema } from "../zodSchemas/orders.js";
 
 export const ordersRouter = Router();
 
 // * GET: get orders
-ordersRouter.get('/', async (_, res) => {
-  const orders = await getOrders();
+ordersRouter.get('/', async (req, res) => {
+  const parsed = getOrdersQuerySchema.safeParse(req.query);
 
-  return res.status(200).json({ orders });
+  if (!parsed.success) {
+    return res.status(400).json({ error: "invalid query" });
+  };
+
+  const orders = await getOrders({
+    customerId: parsed.data.customerId,
+    page: parsed.data.page,
+    pageSize: parsed.data.pageSize
+  });
+
+  return res.status(200).json({ orders: orders.orders, total: orders.total });
 });
 
+
 // * POST: create order
-const createOrderSchema = z.object({
-  body: z.object({
-    orderId: z.string(),
-    customerId: z.string(),
-    item: z.string(),
-    quantity: z.int().positive()
-  })
-})
-
 ordersRouter.post('/', async (req, res) => {
-  const validatedReq = createOrderSchema.safeParse(req);
+  const parsed = createOrderSchema.safeParse(req.body);
 
-  if (!validatedReq.success) {
+  if (!parsed.success) {
     return res.status(400).json({ error: "invalid request" });
   };
 
-  const validatedBody = validatedReq.data.body;
+  const validBody = parsed.data;
 
-  const customer = await getCustomer(validatedBody.customerId);
+  const customer = await getCustomer(validBody.customerId);
 
   if (!customer) {
     return res.status(404).json({ error: "customer not found" });
   };
 
-  const newOrder = await createOrder(validatedBody);
+  const newOrder = await createOrder(validBody);
 
   return res.status(201).json({ newOrder });
 });
