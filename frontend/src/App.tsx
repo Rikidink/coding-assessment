@@ -4,6 +4,7 @@ import { fetchOrders } from "./api/orders"
 
 const PAGE_SIZE = 5
 
+// sortable columns
 type SortBy = "orderId" | "customerId" | "item" | "quantity"
 
 const columns = [
@@ -29,6 +30,7 @@ function App() {
     placeholderData: keepPreviousData,
   });
 
+  // function that sets the sorting state
   function toggleSort(by: SortBy) {
     setPage(1) // reset to page 1 when sorting
     setSort((s) =>
