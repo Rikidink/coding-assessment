@@ -7,7 +7,9 @@ import { z } from "zod";
 export const getOrdersQuerySchema = z.object({
   customerId: z.string().optional(),
   page: z.coerce.number().int().positive().optional(),
-  pageSize: z.coerce.number().int().positive().optional()
+  pageSize: z.coerce.number().int().positive().optional(),
+  sortBy: z.enum(['orderId', 'customerId', 'item', 'quantity']).optional(),
+  sortDir: z.enum(['asc', 'desc']).optional()
 });
 
 /**
@@ -18,4 +20,4 @@ export const createOrderSchema = z.object({
   customerId: z.string(),
   item: z.string(),
   quantity: z.int().positive()
-})
+});

@@ -16,7 +16,9 @@ ordersRouter.get('/', async (req, res) => {
   const orders = await getOrders({
     customerId: parsed.data.customerId,
     page: parsed.data.page,
-    pageSize: parsed.data.pageSize
+    pageSize: parsed.data.pageSize,
+    sortBy: parsed.data.sortBy,
+    sortDir: parsed.data.sortDir
   });
 
   return res.status(200).json({ orders: orders.orders, total: orders.total });
