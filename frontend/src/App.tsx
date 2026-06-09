@@ -4,14 +4,39 @@ import { fetchOrders } from "./api/orders"
 
 const PAGE_SIZE = 5
 
+type SortBy = "orderId" | "customerId" | "item" | "quantity"
+
+const columns = [
+  { key: "orderId", label: "Order", align: "left" },
+  { key: "customerId", label: "Customer", align: "left" },
+  { key: "item", label: "Item", align: "left" },
+  { key: "quantity", label: "Qty", align: "right" },
+] as const
+
+const pageButtonClass =
+  "rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:cursor-pointer hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+
 function App() {
   const [page, setPage] = useState(1)
+  const [sort, setSort] = useState<{ by: SortBy; dir: "asc" | "desc" }>({
+    by: "orderId",
+    dir: "asc",
+  })
 
   const { data, isPending, isError, error, isPlaceholderData } = useQuery({
-    queryKey: ['orders', page],
-    queryFn: () => fetchOrders({ page, pageSize: PAGE_SIZE }),
+    queryKey: ['orders', page, sort.by, sort.dir],
+    queryFn: () => fetchOrders({ page, pageSize: PAGE_SIZE, sortBy: sort.by, sortDir: sort.dir }),
     placeholderData: keepPreviousData,
   });
+
+  function toggleSort(by: SortBy) {
+    setPage(1) // reset to page 1 when sorting
+    setSort((s) =>
+      s.by === by
+        ? { by, dir: s.dir === "asc" ? "desc" : "asc" }
+        : { by, dir: "asc" }
+    )
+  }
 
   if (isPending) return <p className="p-6 text-gray-500">Loading orders...</p>;
   if (isError) return <p className="p-6 text-red-600">Error: {error.message}</p>;
@@ -26,10 +51,20 @@ function App() {
         <table className="w-full text-sm">
           <thead className="bg-gray-50 text-left text-xs font-medium uppercase text-gray-500">
             <tr>
-              <th className="px-4 py-3">Order</th>
-              <th className="px-4 py-3">Customer</th>
-              <th className="px-4 py-3">Item</th>
-              <th className="px-4 py-3 text-right">Qty</th>
+              {columns.map((col) => (
+                <th key={col.key} className={`px-4 py-3 ${col.align === "right" ? "text-right" : ""}`}>
+                  <button
+                    type="button"
+                    onClick={() => toggleSort(col.key)}
+                    className="inline-flex items-center gap-1 uppercase hover:text-gray-700 hover:cursor-pointer"
+                  >
+                    {col.label}
+                    <span className="text-gray-400">
+                      {sort.by === col.key ? (sort.dir === "asc" ? "▲" : "▼") : ""}
+                    </span>
+                  </button>
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
@@ -58,7 +93,7 @@ function App() {
           type="button"
           onClick={() => setPage((p) => Math.max(1, p - 1))}
           disabled={page === 1}
-          className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+          className={pageButtonClass}
         >
           Previous
         </button>
@@ -71,7 +106,7 @@ function App() {
           type="button"
           onClick={() => setPage((p) => p + 1)}
           disabled={isPlaceholderData || page >= totalPages}
-          className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+          className={pageButtonClass}
         >
           Next
         </button>

@@ -8,6 +8,6 @@ migrate(db, { migrationsFolder: "./drizzle" });
 db.insert(customersTable).values([
   { customerId: "CUST-1", firstName: "Aaron", lastName: "Smith" },
   { customerId: "CUST-2", firstName: "Jessica", lastName: "White" },
-]).run();
+]).onConflictDoNothing().run();
 
 console.log("Seed complete.");
