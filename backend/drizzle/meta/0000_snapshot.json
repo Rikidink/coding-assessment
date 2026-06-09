@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "b87b2f7a-64b1-4f98-a377-b9ad498e0f64",
+  "id": "d3534d31-8694-41fb-a479-a0056b5f32aa",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "customers": {
@@ -10,7 +10,7 @@
         "customerId": {
           "name": "customerId",
           "type": "text",
-          "primaryKey": false,
+          "primaryKey": true,
           "notNull": true,
           "autoincrement": false
         },
@@ -29,15 +29,7 @@
           "autoincrement": false
         }
       },
-      "indexes": {
-        "customers_customerId_unique": {
-          "name": "customers_customerId_unique",
-          "columns": [
-            "customerId"
-          ],
-          "isUnique": true
-        }
-      },
+      "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
@@ -49,7 +41,7 @@
         "orderId": {
           "name": "orderId",
           "type": "text",
-          "primaryKey": false,
+          "primaryKey": true,
           "notNull": true,
           "autoincrement": false
         },
@@ -75,15 +67,7 @@
           "autoincrement": false
         }
       },
-      "indexes": {
-        "orders_orderId_unique": {
-          "name": "orders_orderId_unique",
-          "columns": [
-            "orderId"
-          ],
-          "isUnique": true
-        }
-      },
+      "indexes": {},
       "foreignKeys": {
         "orders_customerId_customers_customerId_fk": {
           "name": "orders_customerId_customers_customerId_fk",
