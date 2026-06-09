@@ -9,7 +9,9 @@
 2. Run `npm run dev`
 
 ## Testing
-Using `Vitest` and `Supertest`
+Using `Vitest` to test API request validation
+1. `cd` to the `backend/` directory
+2. Run `npm run test`
 
 ## Packages/external dependencies used
 ### API
