@@ -50,7 +50,7 @@ function App() {
       <h1 className="mb-4 text-2xl font-semibold text-gray-900">Orders</h1>
 
       <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm">
-        <table className="w-full text-sm">
+        <table className="w-full table-fixed text-sm">
           <thead className="bg-gray-50 text-left text-xs font-medium uppercase text-gray-500">
             <tr>
               {columns.map((col) => (
@@ -61,7 +61,7 @@ function App() {
                     className="inline-flex items-center gap-1 uppercase hover:text-gray-700 hover:cursor-pointer"
                   >
                     {col.label}
-                    <span className="text-gray-400">
+                    <span className="inline-block w-3 text-gray-400">
                       {sort.by === col.key ? (sort.dir === "asc" ? "▲" : "▼") : ""}
                     </span>
                   </button>
