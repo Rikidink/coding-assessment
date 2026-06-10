@@ -43,5 +43,9 @@ ordersRouter.post('/', async (req, res) => {
 
   const newOrder = await createOrder(validBody);
 
+  if (!newOrder) {
+    return res.status(409).json({ error: "order already exists" });
+  };
+
   return res.status(201).json({ ...newOrder });
 });

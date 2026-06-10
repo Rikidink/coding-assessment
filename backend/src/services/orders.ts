@@ -52,8 +52,9 @@ export const getOrders = async ({
 
 /**
  * Create an order
+ * If there is a duplicate order, return null
  * @param obj fields required to create an order
- * @returns newly created order
+ * @returns newly created order, if conflict, return null
  */
 export const createOrder = async ({
   orderId,
@@ -74,7 +75,12 @@ export const createOrder = async ({
       item,
       quantity
     })
+    .onConflictDoNothing() // if already exists
     .returning()
 
+  // if the order already exists, i.e. duplicate orderId, return null
+  if (order.length === 0) return null
+
+  // return newly created order otherwise
   return order[0]
 }
