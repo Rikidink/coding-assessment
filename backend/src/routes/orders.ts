@@ -43,5 +43,5 @@ ordersRouter.post('/', async (req, res) => {
 
   const newOrder = await createOrder(validBody);
 
-  return res.status(201).json({ newOrder });
+  return res.status(201).json({ ...newOrder });
 });

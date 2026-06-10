@@ -11,8 +11,8 @@ const SORT_COLUMNS = {
 } as const
 
 /**
- * Get orders with optional filtering and pagination
- * @param obj optional filtering for customerId and pagination params
+ * Get orders with optional filtering, pagination, and column sorting
+ * @param obj optional filtering for customerId, pagination and sorting params
  * @returns object containing orders and amount of orders
  */
 export const getOrders = async ({
